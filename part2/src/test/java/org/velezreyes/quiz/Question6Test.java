@@ -25,9 +25,7 @@ public class Question6Test {
   public void drinkNotFree() {
     VendingMachine vm = VendingMachineImpl.getInstance();
 
-    Exception exception = assertThrows(NotEnoughMoneyException.class, () -> {
-      vm.pressButton("ScottCola");
-    });
+    assertThrows(NotEnoughMoneyException.class, () -> vm.pressButton("ScottCola"));
   }
 
   @Test
@@ -37,26 +35,26 @@ public class Question6Test {
     vm.insertQuarter();
     vm.insertQuarter();
     vm.insertQuarter();
-
     Drink drink = vm.pressButton("ScottCola");
-    
     assertTrue(drink.isFizzy());
     assertEquals(drink.getName(), "ScottCola");
   }
-
+  @Test
   public void machineResets() throws Exception {
     VendingMachine vm = VendingMachineImpl.getInstance();
 
     vm.insertQuarter();
     vm.insertQuarter();
     vm.insertQuarter();
+    // Check that the machine doesn't dispense a drink until the button is pressed.
+    assertEquals(vm.getMoney(), 0.75);
 
     Drink drink = vm.pressButton("ScottCola");
     assertNotNull(drink);
+    // Check that the machine resets after dispensing a drink.
+    assertEquals(vm.getMoney(), 0.0);
 
-    Exception exception = assertThrows(NotEnoughMoneyException.class, () -> {
-      vm.pressButton("ScottCola");
-    });
+    assertThrows(NotEnoughMoneyException.class, () -> vm.pressButton("ScottCola"));
   }
 
   @Test
@@ -68,10 +66,7 @@ public class Question6Test {
     vm.insertQuarter();
 
     // Test that KarenTea costs more than 75 cents.
-    assertThrows(NotEnoughMoneyException.class, () -> {
-      vm.pressButton("KarenTea");
-    });
-
+    assertThrows(NotEnoughMoneyException.class, () -> vm.pressButton("KarenTea"));
     vm.insertQuarter();
 
     Drink drink = vm.pressButton("KarenTea");
@@ -80,7 +75,7 @@ public class Question6Test {
   }
 
   @Test
-  public void otherDrinksUnknown() throws Exception {
+  public void otherDrinksUnknown() throws Exception{
     VendingMachine vm = VendingMachineImpl.getInstance();
 
     vm.insertQuarter();
@@ -88,8 +83,7 @@ public class Question6Test {
     vm.insertQuarter();
     vm.insertQuarter();
 
-    assertThrows(UnknownDrinkException.class, () -> {
-      vm.pressButton("BessieBooze");
-    });
+    assertThrows(UnknownDrinkException.class, () -> vm.pressButton("BessieBooze"));
+    assertEquals(vm.getMoney(), 1.0);
   }
 }
